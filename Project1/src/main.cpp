@@ -1,4 +1,5 @@
 #include <iostream>
+#include "avl-tree.hpp"
 
 /* Note: 
 	1. You will have to comment main() when unit testing your code because catch uses its own main().
@@ -9,6 +10,19 @@
 */
 
 int main(){
-	return 0;
+	AVLTree tree;
+
+
+
+	tree.insert("Mihir","11111111");
+	tree.insert("Ryan","22222222");
+	tree.insert("Jose","18447739");
+
+	// std::cout<<tree.root->name<<endl;
+	// std::cout<<tree.root->right->name<<endl;
+	// std::cout<<tree.root->right->left->name<<endl;
+
+
+
 }
 
