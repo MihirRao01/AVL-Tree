@@ -33,6 +33,8 @@ class AVLTree{
     void heightBalance(TreeNode* node);
     TreeNode* insertBST(TreeNode* node, const string& name, const string& id);
     void InOrderTraversal(TreeNode* node, string& output);
+    void PreOrderTraversal(TreeNode* node, string& output);
+    void PostOrderTraversal(TreeNode* node, string& output);
     
     
     public:
@@ -40,7 +42,10 @@ class AVLTree{
     TreeNode* root;
     AVLTree():root(nullptr){};
     void insert(const string& name,const string& id);
-    void printInOrder();
+    string printInOrder();
+    string printPreOrder();
+    string printPostOrder();
+    int printLevelCount();
     
 
 
@@ -107,7 +112,7 @@ void AVLTree::heightBalance(TreeNode* node){
 }
 
 TreeNode* AVLTree::insertBST(TreeNode* node, const string& name, const string& id){
-    // base case 
+    // base case : reach the point of insertion, creating a new leaf node
     if (!node) {
         cout <<  "successful"  << endl;
         return new TreeNode(name, id);
@@ -124,11 +129,11 @@ TreeNode* AVLTree::insertBST(TreeNode* node, const string& name, const string& i
 
     else {
         cout <<"unsuccessful" << endl;
-        return node;
+        //return node;
     }
 
-    cout<<node->name<<endl;
-
+    //cout<<node->name<<endl;
+    heightBalance(node);
     return node;
 
     // calculate the height of each node as it is added in 
@@ -155,6 +160,18 @@ void AVLTree::insert(const string&name, const string&id){
 
 }
 
+
+int AVLTree::printLevelCount(){
+    // the level is 1 based and the height of the tree is also 1 based, so return the height of the root
+    int levelCount; 
+    if(!root){
+        levelCount = 0;
+    }
+    levelCount = root->height;
+    return levelCount;
+}
+
+
 void AVLTree::InOrderTraversal(TreeNode* node, string& output){
     if(node==nullptr){
     }
@@ -164,17 +181,63 @@ void AVLTree::InOrderTraversal(TreeNode* node, string& output){
         InOrderTraversal(node->right,output);
     }
 }
-
-void AVLTree::printInOrder(){
+// are we supposed to return "" if there is nothing in the list ?
+string AVLTree::printInOrder(){
     string output = "";
-    
+
     InOrderTraversal(root,output);
 
     if(output.length()!=0){
         output = output.substr(0,output.length()-2);
     }
     cout<< output;
+    return output;
 }
+
+void AVLTree::PreOrderTraversal(TreeNode* node, string& output){ 
+//NLR traversal
+    if(node==nullptr){
+    }
+    else{
+         output+=node->name+", ";
+         PreOrderTraversal(node->left,output);
+         PreOrderTraversal(node->right,output);
+    }
+}
+
+string AVLTree::printPreOrder(){
+    string output = "";
+    PreOrderTraversal(root,output);
+     if(output.length()!=0){
+        output = output.substr(0,output.length()-2);
+    }
+    cout<< output;
+    return output;
+}
+
+void AVLTree::PostOrderTraversal(TreeNode* node,string& output){
+    //LRN traversal
+    if(node==nullptr){
+    }
+    else{
+        PostOrderTraversal(node->left,output);
+        PostOrderTraversal(node->right,output);
+        output+=node->name+", ";
+    }
+}
+
+string AVLTree::printPostOrder(){
+    string output = "";
+    PostOrderTraversal(root,output);
+     if(output.length()!=0){
+        output = output.substr(0,output.length()-2);
+    }
+    cout<< output;
+    return output;
+
+}
+
+
 
 
 

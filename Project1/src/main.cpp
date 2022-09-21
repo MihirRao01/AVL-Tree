@@ -24,6 +24,12 @@ int main(){
 	// std::cout<<tree.root->right->left->name<<endl;
 
 	tree.printInOrder();
+	std::cout<<'\n';
+	tree.printPreOrder();
+	std::cout<<'\n';
+	tree.printPostOrder();
+	std::cout<<'\n';
+	cout<<tree.printLevelCount();
 
 
 }
