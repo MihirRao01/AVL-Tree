@@ -14,14 +14,16 @@ int main(){
 
 
 
-	tree.insert("Mihir","11111111");
-	tree.insert("Ryan","22222222");
-	tree.insert("Jose","18447739");
+	tree.insert("Brandon","45679999");
+	tree.insert("Brian","35459999");
+	tree.insert("Briana","87879999");
+	tree.insert("Bella","95469999");
 
 	// std::cout<<tree.root->name<<endl;
 	// std::cout<<tree.root->right->name<<endl;
 	// std::cout<<tree.root->right->left->name<<endl;
 
+	tree.printInOrder();
 
 
 }

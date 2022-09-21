@@ -32,6 +32,7 @@ class AVLTree{
     bool idValid(const string& id);
     void heightBalance(TreeNode* node);
     TreeNode* insertBST(TreeNode* node, const string& name, const string& id);
+    void InOrderTraversal(TreeNode* node, string& output);
     
     
     public:
@@ -39,6 +40,7 @@ class AVLTree{
     TreeNode* root;
     AVLTree():root(nullptr){};
     void insert(const string& name,const string& id);
+    void printInOrder();
     
 
 
@@ -151,6 +153,27 @@ void AVLTree::insert(const string&name, const string&id){
     // if the tree is not empty recursively add the new node
     root = insertBST(root,name,id);
 
+}
+
+void AVLTree::InOrderTraversal(TreeNode* node, string& output){
+    if(node==nullptr){
+    }
+    else{
+        InOrderTraversal(node->left, output);
+        output+=node->name+", ";
+        InOrderTraversal(node->right,output);
+    }
+}
+
+void AVLTree::printInOrder(){
+    string output = "";
+    
+    InOrderTraversal(root,output);
+
+    if(output.length()!=0){
+        output = output.substr(0,output.length()-2);
+    }
+    cout<< output;
 }
 
 
