@@ -35,21 +35,49 @@ class AVLTree{
     void InOrderTraversal(TreeNode* node, string& output);
     void PreOrderTraversal(TreeNode* node, string& output);
     void PostOrderTraversal(TreeNode* node, string& output);
+    TreeNode* rotateLeft(TreeNode* node);
+    TreeNode* rotateRight(TreeNode* node);
+    TreeNode* rotateLeftRight(TreeNode* node);
+    TreeNode* rotateRightLeft(TreeNode* node);
+    string searchIdHelper(TreeNode* node,const string& key);
+    void searchNameHelper(TreeNode*, const string& name, string& output);
+    void ClearTree(TreeNode* &node);
     
-    
-    public:
+public:
     // root needs to be private but public now for
     TreeNode* root;
     AVLTree():root(nullptr){};
+    ~AVLTree();
     void insert(const string& name,const string& id);
     string printInOrder();
     string printPreOrder();
     string printPostOrder();
     int printLevelCount();
+    void searchID(string& id);
+    void searchName(string& name);
     
 
 
 };
+
+void AVLTree::ClearTree(TreeNode* &node){
+    if(node!=nullptr){
+        ClearTree(node->left);
+        ClearTree(node->right);
+        delete node;
+        node = nullptr;
+    }
+}
+
+AVLTree::~AVLTree(){
+    ClearTree(root);
+    if(root == nullptr){
+        cout<<"Tree has been cleared";
+    }
+    else{
+        cout<<"Not cleared";
+    }
+}
 
 //check if the id is a valid
 bool AVLTree::idValid(const string& id){
@@ -84,30 +112,126 @@ bool AVLTree::nameValid(const string& name) {
     return true;
 }
 
+string AVLTree::searchIdHelper(TreeNode* node, const string& key){
+    if(!node){
+
+        return "unsuccessful";
+    } 
+    else if(stoi(node->id) == stoi(key)){
+        return node->name;
+    }
+    else if (stoi(node->id)> stoi(key)){
+
+       return searchIdHelper(node->left,key);
+    }
+    else{
+
+       return searchIdHelper(node->right,key);
+    }
+}
+
+void AVLTree::searchID(string& id){
+
+    if (!idValid(id)) return;    
+
+    string result;
+
+    result = searchIdHelper(root,id);
+
+    cout<<result;
+
+}
+
+void AVLTree::searchNameHelper(TreeNode* node, const string& name, string& output){
+
+    if(!node){
+    }
+    else{
+        if(node->name == name){
+           output+=node->id + "\n";
+        }
+         searchNameHelper(node->left,name,output);
+         searchNameHelper(node->right,name,output);
+    }
+}
+
+void AVLTree::searchName(string& name){
+
+    string output;
+    searchNameHelper(root,name, output);
+
+    if(output.length() == 0){
+        cout<<"unsuccessful";
+    }
+    else{
+        cout<<output;
+    }
+}
+
+
+// Left Rotation 
+TreeNode* AVLTree::rotateLeft(TreeNode* node){
+    TreeNode* grandchild = node->right->left;
+    TreeNode* newParent = node->right;
+    newParent->left = node;
+    node->right = grandchild;
+    // update the height of the node and the new parent
+    heightBalance(node);
+    heightBalance(newParent);
+    return newParent;
+    
+}
+// rotae right miror image of rotate left
+TreeNode* AVLTree::rotateRight(TreeNode* node){
+    TreeNode* grandchild = node->left->right;
+    TreeNode* newParent  = node->left;
+    newParent->right = node;
+    node->left = grandchild;
+    
+    heightBalance(node);
+    heightBalance(newParent);
+    return newParent;
+}
+
+TreeNode* AVLTree::rotateLeftRight(TreeNode* node){
+    // roate left on the root's left subtree and then rotate right on the root
+    node->left = rotateLeft(node->left);
+    return rotateRight(node);
+}
+
+TreeNode* AVLTree::rotateRightLeft(TreeNode* node){
+    // roate right on the root's right subtree and then rotate left on the root
+    node->right = rotateRight(node->right);
+    return rotateLeft(node);
+}
+
+
 // assign a height to each node and a balanceFactor
 void AVLTree::heightBalance(TreeNode* node){
 
     if(node == nullptr){
         return;
     }
-
     // if at leaf, the height is 1
     // if at a node and the only child is the right, the height is 1+ the height of the child (same thing as left)
-    if(node->left==nullptr && node->right == nullptr){
+     if (node->right && node->left) {
+
+        node->height = 1 + max(node->left->height, node->right->height);
+        node->balanceFactor = node->left->height - node->right->height;
+    }
+    else if (node->left) {
+
+        node->height = 1 + node->left->height;
+        node->balanceFactor = node->left->height;
+    }
+    else if (node->right) {
+
+        node->height = 1 + node->right->height;
+        node->balanceFactor = -1 * node->right->height;
+    }
+    else {
         node->height = 1;
-    }
-    else if(node->left==nullptr && node->right!=nullptr){
-        node->height = 1+node->right->height;
-    }
-    else if(node->left!=nullptr&& node->right==nullptr){
-        node->height = 1+node->left->height;
-    }
-    else if(node->left!=nullptr&& node->right!=nullptr){
-        node->height = 1+max(node->left->height,node->right->height);
-    }
-    else{
-        node->height = 1;
-        node->balanceFactor =0;
+        node->balanceFactor = 0;
     }
 }
 
@@ -131,12 +255,34 @@ TreeNode* AVLTree::insertBST(TreeNode* node, const string& name, const string& i
         cout <<"unsuccessful" << endl;
         //return node;
     }
-
-    //cout<<node->name<<endl;
+    // calculate the hight of the node 
     heightBalance(node);
+    // perform the necesary rotations
+    if(node->balanceFactor == -2){
+        // if the tree's right subtree is left heavy
+        if(node->right->balanceFactor == -1){
+
+             return rotateLeft(node);
+        }
+        else{
+           // right left rotation
+           return rotateRightLeft(node);
+        }
+    }
+    else if(node->balanceFactor == 2){
+
+        if(node->left->balanceFactor== 1){
+            // rotate Right;
+            return rotateRight(node);
+
+        }
+        else{
+            // rotate left Right;
+            return rotateLeftRight(node);
+        }
+    }
     return node;
 
-    // calculate the height of each node as it is added in 
     // perform the rotations as necessary
 }
 
@@ -162,7 +308,7 @@ void AVLTree::insert(const string&name, const string&id){
 
 
 int AVLTree::printLevelCount(){
-    // the level is 1 based and the height of the tree is also 1 based, so return the height of the root
+    // height of the root will be the same as the total number of levels sine both are 1 based
     int levelCount; 
     if(!root){
         levelCount = 0;
