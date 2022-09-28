@@ -27,7 +27,7 @@ TreeNode(string name, string id){
 
 class AVLTree{
 
-    //TreeNode* root;
+    TreeNode* root;
     bool nameValid(const string& name);
     bool idValid(const string& id);
     void heightBalance(TreeNode* node);
@@ -42,10 +42,10 @@ class AVLTree{
     string searchIdHelper(TreeNode* node,const string& key);
     void searchNameHelper(TreeNode*, const string& name, string& output);
     void ClearTree(TreeNode* &node);
+    TreeNode* RemoveNodeHelper(TreeNode* node, const string& key);
+    void RemoveNodeInorderHelper(TreeNode* node, vector<string>& outptu);
     
 public:
-    // root needs to be private but public now for
-    TreeNode* root;
     AVLTree():root(nullptr){};
     ~AVLTree();
     void insert(const string& name,const string& id);
@@ -55,6 +55,8 @@ public:
     int printLevelCount();
     void searchID(string& id);
     void searchName(string& name);
+    void removeId(const string& id);
+    void removeInorder(int N);
     
 
 
@@ -158,8 +160,9 @@ void AVLTree::searchNameHelper(TreeNode* node, const string& name, string& outpu
 void AVLTree::searchName(string& name){
 
     string output;
-    searchNameHelper(root,name, output);
 
+    searchNameHelper(root,name, output);
+    
     if(output.length() == 0){
         cout<<"unsuccessful";
     }
@@ -307,6 +310,104 @@ void AVLTree::insert(const string&name, const string&id){
 }
 
 
+TreeNode* AVLTree::RemoveNodeHelper(TreeNode* node, const string& key){
+    // if the root i null then the item is not in the tree, else compare to the root
+    if(!node){ 
+        cout<<"unsuccessful\n";
+        return nullptr;
+    }
+    else if(stoi(node->id)> stoi(key)){
+        node->left = RemoveNodeHelper(node->left,key);
+    }
+    else if(stoi(node->id)<stoi(key)){
+        node->right = RemoveNodeHelper(node->right,key);
+    }
+    else{ // the item is in the local root
+        cout<<"successful\n";
+        if(node->left==nullptr && node->right==nullptr){
+            delete node;
+            node = nullptr; 
+            return node;
+        }
+        else if (node->left == nullptr){// node only has one child a right one
+            TreeNode* temp = node->right;
+            delete node;
+            heightBalance(temp);
+            return temp;
+        }
+        else if( node->right == nullptr){ // node only has one child a right one
+            TreeNode* temp = node->left;
+            delete node;
+            heightBalance(temp);
+            return temp;
+        }
+        else { //node has two children, so replace the node with the inorder sucessor, the right subtree left most child
+            // finding the inorder succesor
+            TreeNode* successorParent = node;
+            TreeNode* successor = node->right;
+
+            while(successor->left){
+                successorParent = successor;
+                successor = successor->left;
+            }
+            // replace the node with the inorder successor
+            node->name = successor->name;
+            node->id = successor->id;
+
+            // repalce the child of the successor
+            if (successor == node->right) {
+                node->right = successor->right;
+            }
+            else{
+                successorParent->left = successor->right;
+            }
+
+            delete successor;
+
+            
+        }
+    }
+
+    heightBalance(node);
+    return node;
+
+}
+
+void AVLTree::removeId(const string& id){
+
+    if(!idValid(id)){
+        cout<<"unsuccessful\n";
+    }
+    root = RemoveNodeHelper(root,id);
+
+}
+
+void AVLTree::RemoveNodeInorderHelper(TreeNode* node, vector<string>& output){
+     
+     if(node){
+        RemoveNodeInorderHelper(node->left, output);
+        output.push_back(node->id);
+        RemoveNodeInorderHelper(node->right,output);
+     }
+}
+
+void AVLTree::removeInorder(int N){
+
+    vector<string>output;
+    RemoveNodeInorderHelper(root, output);
+
+    if(N>output.size()){
+        cout<<"unsuccessful\n";
+    }
+    else{
+        root = RemoveNodeHelper(root,output[N]);
+    }
+    
+    
+
+}
+
+
 int AVLTree::printLevelCount(){
     // height of the root will be the same as the total number of levels sine both are 1 based
     int levelCount; 
@@ -336,7 +437,7 @@ string AVLTree::printInOrder(){
     if(output.length()!=0){
         output = output.substr(0,output.length()-2);
     }
-    cout<< output;
+    cout<< output<<"\n";
     return output;
 }
 

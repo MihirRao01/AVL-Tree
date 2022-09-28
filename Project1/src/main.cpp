@@ -10,27 +10,28 @@
 */
 
 int main(){
+	
 	AVLTree tree;
 
 
 
-	//tree.insert("Brandon","45679999");
-	//tree.insert("Brian","35459999");
-	//tree.insert("Briana","87879999");
-	//tree.insert("Bella","95469999");
+	tree.insert("Brandon","45679999");
+	tree.insert("Brian","35459999");
+	tree.insert("Briana","87879999");
+	tree.insert("Bella","95469999");
 
 	// std::cout<<tree.root->name<<endl;
 	// std::cout<<tree.root->right->name<<endl;
 	// std::cout<<tree.root->right->left->name<<endl;
 
-	tree.insert("Mihir","33333333");
-	tree.insert("Mihir","11111111");
-	tree.insert("Ryan","22222222");
-	tree.insert("Mihir","44444444");
-	tree.insert("Ben","55555555");
+	// tree.insert("Mihir","33333333");
+	// tree.insert("Jose","11111111");
+	// tree.insert("Ryan","22222222");
+	// tree.insert("Danny","44444444");
+	// tree.insert("Ben","55555555");
 
 
-	//tree.printInOrder();
+	tree.printInOrder();
 	//std::cout<<'\n';
 	//std::cout<<tree.root->name<<endl;
 	// string name = "Mihir";
@@ -42,6 +43,12 @@ int main(){
 	// tree.printPostOrder();
 	// std::cout<<'\n';
 	// cout<<tree.printLevelCount();
+	string id = "45679999";
+	tree.removeId(id);
+	//std::cout<<'\n';
+	tree.removeInorder(7);
+	tree.printInOrder();
+	//std::cout<<'\n';
 
 	return 0;
 }
