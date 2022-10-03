@@ -12,16 +12,8 @@ struct TreeNode{
     TreeNode* right;
     TreeNode* left;
 
-TreeNode(string name, string id){
-    this->name = name;
-    this->id = id;
-    height = 1;
-    balanceFactor = 0;
-    this->right = nullptr;
-    this->left = nullptr;
-}
-
-
+TreeNode(string name, string id) : name(name), id(id), 
+    height(1), balanceFactor(0), left(nullptr), right(nullptr) {}
 
 };
 
@@ -61,7 +53,7 @@ public:
 
 
 };
-
+// deallocte the memory for all the nodes in the tree
 void AVLTree::ClearTree(TreeNode* &node){
     if(node!=nullptr){
         ClearTree(node->left);
@@ -72,13 +64,9 @@ void AVLTree::ClearTree(TreeNode* &node){
 }
 
 AVLTree::~AVLTree(){
+    
     ClearTree(root);
-    if(root == nullptr){
-        cout<<"Tree has been cleared";
-    }
-    else{
-        cout<<"Not cleared";
-    }
+   
 }
 
 //check if the id is a valid
@@ -114,6 +102,7 @@ bool AVLTree::nameValid(const string& name) {
     return true;
 }
 
+// look for the specified Id in the tree and return the name
 string AVLTree::searchIdHelper(TreeNode* node, const string& key){
     if(!node){
 
@@ -131,7 +120,7 @@ string AVLTree::searchIdHelper(TreeNode* node, const string& key){
        return searchIdHelper(node->right,key);
     }
 }
-
+// this function is the command the user calls and this function calls search ID helper to get the naem
 void AVLTree::searchID(string& id){
 
     if (!idValid(id)) return;    
@@ -140,10 +129,10 @@ void AVLTree::searchID(string& id){
 
     result = searchIdHelper(root,id);
 
-    cout<<result;
+    cout<<result<<endl;
 
 }
-
+// same as searchIdHelper, but return the ids for the name specified
 void AVLTree::searchNameHelper(TreeNode* node, const string& name, string& output){
 
     if(!node){
@@ -164,7 +153,7 @@ void AVLTree::searchName(string& name){
     searchNameHelper(root,name, output);
     
     if(output.length() == 0){
-        cout<<"unsuccessful";
+        cout<<"unsuccessful"<<endl;
     }
     else{
         cout<<output;
@@ -184,7 +173,7 @@ TreeNode* AVLTree::rotateLeft(TreeNode* node){
     return newParent;
     
 }
-// rotae right miror image of rotate left
+// rotate right miror image of rotate left
 TreeNode* AVLTree::rotateRight(TreeNode* node){
     TreeNode* grandchild = node->left->right;
     TreeNode* newParent  = node->left;
@@ -285,8 +274,6 @@ TreeNode* AVLTree::insertBST(TreeNode* node, const string& name, const string& i
         }
     }
     return node;
-
-    // perform the rotations as necessary
 }
 
 void AVLTree::insert(const string&name, const string&id){
@@ -300,7 +287,7 @@ void AVLTree::insert(const string&name, const string&id){
     // if the tree is empty, make the inserted node the root node
     if(!root){
         root = new TreeNode(name,id);
-        cout<<"sucessful" << endl;
+        cout<<"successful" << endl;
         return;
     }
     //cout<<"Tree is not empty and the root is :"<<root->name<<endl;
@@ -311,7 +298,7 @@ void AVLTree::insert(const string&name, const string&id){
 
 
 TreeNode* AVLTree::RemoveNodeHelper(TreeNode* node, const string& key){
-    // if the root i null then the item is not in the tree, else compare to the root
+    // if the root is null then the item is not in the tree, else compare to the root
     if(!node){ 
         cout<<"unsuccessful\n";
         return nullptr;
@@ -414,11 +401,14 @@ int AVLTree::printLevelCount(){
     if(!root){
         levelCount = 0;
     }
-    levelCount = root->height;
+    else{
+        levelCount = root->height;
+    }
+    
     return levelCount;
 }
 
-
+// Prints the nodes from least to greatest going through both subtress starting from the left
 void AVLTree::InOrderTraversal(TreeNode* node, string& output){
     if(node==nullptr){
     }
@@ -428,7 +418,7 @@ void AVLTree::InOrderTraversal(TreeNode* node, string& output){
         InOrderTraversal(node->right,output);
     }
 }
-// are we supposed to return "" if there is nothing in the list ?
+
 string AVLTree::printInOrder(){
     string output = "";
 
@@ -440,7 +430,7 @@ string AVLTree::printInOrder(){
     cout<< output<<"\n";
     return output;
 }
-
+// prints the nodes in the left subtree and then the right
 void AVLTree::PreOrderTraversal(TreeNode* node, string& output){ 
 //NLR traversal
     if(node==nullptr){
@@ -458,10 +448,10 @@ string AVLTree::printPreOrder(){
      if(output.length()!=0){
         output = output.substr(0,output.length()-2);
     }
-    cout<< output;
+    cout<< output<<"\n";
     return output;
 }
-
+// prints the left and right subtrees and then the node
 void AVLTree::PostOrderTraversal(TreeNode* node,string& output){
     //LRN traversal
     if(node==nullptr){
@@ -479,9 +469,29 @@ string AVLTree::printPostOrder(){
      if(output.length()!=0){
         output = output.substr(0,output.length()-2);
     }
-    cout<< output;
+    cout<< output<<"\n";
     return output;
 
+}
+
+
+// parse the name in the string
+string parseName(string& command) {
+
+    int spaceIndex = command.find(" ");
+    command = command.substr(spaceIndex + 2, command.length());
+    int quoteIndex = command.find("\"");
+    string data = command.substr(0, quoteIndex);
+    return data;
+}
+
+
+// function to parse the id in main
+string parseId(string& command) {
+
+    int spaceIndex = command.find(" ");
+    string data = command.substr(spaceIndex + 1, command.length());
+    return data;
 }
 
 

@@ -1,4 +1,3 @@
-#include <iostream>
 #include "avl-tree.hpp"
 
 /* Note: 
@@ -13,43 +12,58 @@ int main(){
 	
 	AVLTree tree;
 
+	string numCommands;
 
+	getline(cin,numCommands);
 
-	tree.insert("Brandon","45679999");
-	tree.insert("Brian","35459999");
-	tree.insert("Briana","87879999");
-	tree.insert("Bella","95469999");
+	 for (int i = 0; i < stoi(numCommands); i++) {
 
-	// std::cout<<tree.root->name<<endl;
-	// std::cout<<tree.root->right->name<<endl;
-	// std::cout<<tree.root->right->left->name<<endl;
+        string command;
+        getline(cin, command);
 
-	// tree.insert("Mihir","33333333");
-	// tree.insert("Jose","11111111");
-	// tree.insert("Ryan","22222222");
-	// tree.insert("Danny","44444444");
-	// tree.insert("Ben","55555555");
+        if (command.find("insert") == 0) {
 
+            string studentName = parseName(command);
+            string studentId = parseId(command);
+            tree.insert(studentName, studentId);
+        }
+        else if (command.find("remove") == 0) {
 
-	tree.printInOrder();
-	//std::cout<<'\n';
-	//std::cout<<tree.root->name<<endl;
-	// string name = "Mihir";
-	// tree.searchName(name);
-	// // string id = "55555555";
-	// // tree.searchID(id);
-	// tree.printPreOrder();
-	// std::cout<<'\n';
-	// tree.printPostOrder();
-	// std::cout<<'\n';
-	// cout<<tree.printLevelCount();
-	string id = "45679999";
-	tree.removeId(id);
-	//std::cout<<'\n';
-	tree.removeInorder(7);
-	tree.printInOrder();
-	//std::cout<<'\n';
+            if (command.find("removeInorder") == 0) {
 
+                string index = parseId(command);
+                tree.removeInorder(stoi(index));
+            }
+            else {
+
+                string studentId = parseId(command);
+                tree.removeId(studentId);
+            }
+        }
+        else if (command.find("search") == 0) {
+
+            if (command.find("\"") != -1) {
+
+                string studentName = parseName(command);
+                tree.searchName(studentName);                
+            }
+            else {
+                string studentId = parseId(command);
+                tree.searchID(studentId);
+            }
+        }
+        else if (command.find("printInorder") == 0) 
+            tree.printInOrder();
+        else if (command.find("printPreorder") == 0)
+            tree.printPreOrder();
+        else if (command.find("printPostorder") == 0)
+            tree.printPostOrder();
+        else if (command.find("printLevelCount") == 0)
+            cout<<tree.printLevelCount()<<endl;
+        else 
+            cout << "invalid command" << endl;
+    }
 	return 0;
 }
+
 
